@@ -50,11 +50,31 @@ app.post("/users", (request, response) => {
 });
 
 app.get("/todos", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+
+  return response.send(user.todos);
 });
 
 app.post("/todos", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { title, deadline } = request.body;
+  const { user } = request;
+
+  if (!title) {
+    return response.status(400).send({ error: "Title is required!" });
+  }
+  if (!deadline) {
+    return response.status(400).send({ error: "Deadline is required!" });
+  }
+  const todo = {
+    id: uuidv4(), // precisa ser um uuid
+    title,
+    done: false,
+    deadline: new Date(deadline),
+    created_at: new Date(),
+  };
+  user.todos.push(todo);
+
+  return response.status(201).json(todo);
 });
 
 app.put("/todos/:id", checksExistsUserAccount, (request, response) => {
