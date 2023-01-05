@@ -78,6 +78,24 @@ app.post("/todos", checksExistsUserAccount, (request, response) => {
 });
 
 app.put("/todos/:id", checksExistsUserAccount, (request, response) => {
+  const { user } = request;
+  const { id } = request.params;
+  const { title, deadline } = request.body;
+
+  // user.todos.every((item) => {
+  //   if (item.id === id) {
+  //     item.title = title;
+  //     item.deadline = new Date(deadline);
+  //     return false;
+  //   }
+  //   return true;
+  // });
+
+  const todoToUpdate = user.todos.find((item) => item.id === id);
+  todoToUpdate.title = title;
+  todoToUpdate.deadline = new Date(deadline);
+
+  return response.status(201).json(todoToUpdate);
   // Complete aqui
 });
 
